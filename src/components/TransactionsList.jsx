@@ -37,7 +37,9 @@ export default function TransactionsList({
                     <TableCell style={{ position: "relative" }}>
                       +{transaction.amount}{" "}
                       <CancelIcon
-                        onClick={() => deleteTransaction(index)}
+                        onClick={() =>
+                          deleteTransaction(index, transaction.type)
+                        }
                         style={{
                           position: "absolute",
                           top: "50%",
@@ -53,14 +55,17 @@ export default function TransactionsList({
                 ))
             : transactions
                 .filter((transaction) => transaction.type === "expense")
-                .map(({ key, description, amount }) => (
-                  <TableRow key={key}>
-                    <TableCell>{description}</TableCell>
+                .map((transaction, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{transaction.description}</TableCell>
                     <TableCell style={{ position: "relative" }}>
-                      -{amount}
+                      -{transaction.amount}
                       <br />
                       <span style={{ backgroundColor: "red" }}>50%</span>
                       <CancelIcon
+                        onClick={() =>
+                          deleteTransaction(index, transaction.type)
+                        }
                         style={{
                           position: "absolute",
                           top: "50%",

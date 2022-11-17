@@ -9,10 +9,16 @@ import TransactionsList from "./TransactionsList";
 
 import "../styles/App.css";
 
-import { getMonthAndYear, fakeData } from "../utils/helpers";
+import {
+  getMonthAndYear,
+  listOfIncome,
+  listOfExpenses,
+} from "../utils/helpers";
 
 function App() {
-  const [transactions, setTransactions] = useState(fakeData);
+  const [incomeTransactions, setIncomeTransactions] = useState(listOfIncome);
+  const [expenseTransactions, setExpenseTransactions] =
+    useState(listOfExpenses);
   const [entryType, setEntryType] = useState(1);
   const [entryDescription, setEntryDescription] = useState("");
   const [entryAmount, setEntryAmount] = useState("");
@@ -28,9 +34,9 @@ function App() {
   const getIncomeTotal = () => {
     let incomeTotal = 0;
 
-    transactions
-      .filter((transaction) => transaction.type === "income")
-      .map((transaction) => (incomeTotal += transaction.amount));
+    incomeTransactions.map(
+      (transaction) => (incomeTotal += transaction.amount)
+    );
 
     return incomeTotal;
   };
@@ -38,9 +44,9 @@ function App() {
   const getExpenseTotal = () => {
     let expensesTotal = 0;
 
-    transactions
-      .filter((transaction) => transaction.type === "expense")
-      .map((transaction) => (expensesTotal += transaction.amount));
+    expenseTransactions.map(
+      (transaction) => (expensesTotal += transaction.amount)
+    );
 
     return expensesTotal;
   };
@@ -55,14 +61,26 @@ function App() {
 
   const submitTransaction = () => {
     if (entryDescription && entryAmount > 0) {
-      setTransactions((prevState) => [
-        ...prevState,
-        {
-          type: entryType === 1 ? "income" : "expense",
-          description: entryDescription,
-          amount: Number(entryAmount),
-        },
-      ]);
+      if (entryType === 1) {
+        setIncomeTransactions((prevState) => [
+          ...prevState,
+          {
+            type: "income",
+            description: entryDescription,
+            amount: Number(entryAmount),
+          },
+        ]);
+      } else {
+        setExpenseTransactions((prevState) => [
+          ...prevState,
+          {
+            type: "expense",
+            description: entryDescription,
+            amount: Number(entryAmount),
+          },
+        ]);
+      }
+
       setEntryType(1);
       setEntryDescription("");
       setEntryAmount("");
@@ -71,12 +89,20 @@ function App() {
     }
   };
 
-  const deleteTransaction = (key) => {
+  const deleteTransaction = (key, type) => {
     console.log(key);
 
-    /* setTransactions((prevState) =>
-      prevState.filter((transaction) => transaction.key !== key)
-    ); */
+    if (type === "income") {
+      setIncomeTransactions((prevState) => {
+        prevState = prevState.slice(0, key).concat(prevState.slice(key + 1));
+        return prevState;
+      });
+    } else {
+      setExpenseTransactions((prevState) => {
+        prevState = prevState.slice(0, key).concat(prevState.slice(key + 1));
+        return prevState;
+      });
+    }
   };
 
   return (
@@ -157,7 +183,7 @@ function App() {
       <Grid container spacing={2}>
         <Grid item sm={6}>
           <TransactionsList
-            transactions={transactions}
+            transactions={incomeTransactions}
             type="Income"
             deleteTransaction={deleteTransaction}
           />
@@ -165,7 +191,7 @@ function App() {
 
         <Grid item sm={6}>
           <TransactionsList
-            transactions={transactions}
+            transactions={expenseTransactions}
             type="Expenses"
             deleteTransaction={deleteTransaction}
           />

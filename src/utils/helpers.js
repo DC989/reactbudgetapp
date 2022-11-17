@@ -21,11 +21,11 @@ export function getMonthAndYear() {
   return { month, year };
 }
 
-export const fakeData = [
+export const listOfIncome = [
   {
     type: "income",
     description: "Salary",
-    amount: 5000,
+    amount: 3000,
   },
   {
     type: "income",
@@ -35,22 +35,20 @@ export const fakeData = [
   {
     type: "income",
     description: "Sold Car",
-    amount: 10000,
+    amount: 5000,
   },
-  {
-    type: "income",
-    description: "Side Gig",
-    amount: 1000,
-  },
+];
+
+export const listOfExpenses = [
   {
     type: "expense",
     description: "Rent",
-    amount: 450,
+    amount: 900,
   },
   {
     type: "expense",
     description: "Holidays",
-    amount: 3500,
+    amount: 1000,
   },
   {
     type: "expense",
@@ -61,15 +59,5 @@ export const fakeData = [
     type: "expense",
     description: "Loan",
     amount: 4500,
-  },
-  {
-    type: "expense",
-    description: "Laptop",
-    amount: 4500,
-  },
-  {
-    type: "expense",
-    description: "Bought Car",
-    amount: 15000,
   },
 ];
