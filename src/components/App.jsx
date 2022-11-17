@@ -9,63 +9,92 @@ import TransactionsList from "./TransactionsList";
 
 import "../styles/App.css";
 
-import { getMonthAndYear } from "../utils/helpers";
-
-const fakeData = [
-  {
-    type: "income",
-    description: "Salary",
-    amount: 3000,
-  },
-  {
-    type: "income",
-    description: "Project",
-    amount: 1500,
-  },
-  {
-    type: "income",
-    description: "Sold Car",
-    amount: 5000,
-  },
-  {
-    type: "expense",
-    description: "Rent",
-    amount: 900,
-  },
-  {
-    type: "expense",
-    description: "Holidays",
-    amount: 1000,
-  },
-  {
-    type: "expense",
-    description: "Gaz & Electricity",
-    amount: 250,
-  },
-  {
-    type: "expense",
-    description: "Loan",
-    amount: 4500,
-  },
-];
+import { getMonthAndYear, fakeData } from "../utils/helpers";
 
 function App() {
   const [transactions, setTransactions] = useState(fakeData);
+  const [entryType, setEntryType] = useState(1);
+  const [entryDescription, setEntryDescription] = useState("");
+  const [entryAmount, setEntryAmount] = useState("");
+
+  /* const [entry, setEntry] = useState({
+    type: 1,
+    description: "",
+    amount: "",
+  }); */
 
   const { month, year } = getMonthAndYear();
+
+  const getIncomeTotal = () => {
+    let incomeTotal = 0;
+
+    transactions
+      .filter((transaction) => transaction.type === "income")
+      .map((transaction) => (incomeTotal += transaction.amount));
+
+    return incomeTotal;
+  };
+
+  const getExpenseTotal = () => {
+    let expensesTotal = 0;
+
+    transactions
+      .filter((transaction) => transaction.type === "expense")
+      .map((transaction) => (expensesTotal += transaction.amount));
+
+    return expensesTotal;
+  };
+
+  const availableBudget = getIncomeTotal() - getExpenseTotal();
+
+  const incomeSpentPercentage = () => {
+    return getIncomeTotal() > 0
+      ? `${((getExpenseTotal() / getIncomeTotal()) * 100).toFixed(2)}%`
+      : "There is no income";
+  };
+
+  const submitTransaction = () => {
+    if (entryDescription && entryAmount > 0) {
+      setTransactions((prevState) => [
+        ...prevState,
+        {
+          type: entryType === 1 ? "income" : "expense",
+          description: entryDescription,
+          amount: Number(entryAmount),
+        },
+      ]);
+      setEntryType(1);
+      setEntryDescription("");
+      setEntryAmount("");
+    } else {
+      alert("Please fill in all the fields");
+    }
+  };
+
+  const deleteTransaction = (key) => {
+    console.log(key);
+
+    /* setTransactions((prevState) =>
+      prevState.filter((transaction) => transaction.key !== key)
+    ); */
+  };
 
   return (
     <div className="App">
       <header className="AppHeader">
         <div className="AppDisplay">
           Available Budget in {month} {year}:
-          <div className="AppDisplayBudget">+2,850.00</div>
+          <div className="AppDisplayBudget">
+            {availableBudget > 0 ? `+ ${availableBudget.toFixed(2)}` : null}
+            {availableBudget < 0 ? `${availableBudget.toFixed(2)}` : null}
+            {availableBudget === 0 ? `${availableBudget.toFixed(2)}` : null}
+          </div>
           <div
             style={{ backgroundColor: "lightblue" }}
             className="AppDisplayIncome"
           >
             Income
-            <span>+9,500.00</span>
+            <span>+{getIncomeTotal()}</span>
           </div>
           <div
             style={{ backgroundColor: "red" }}
@@ -73,44 +102,73 @@ function App() {
           >
             Expenses
             <span>
-              -6,650.00
-              <span>70%</span>
+              -{getExpenseTotal()}
+              <br />
+              <span>{incomeSpentPercentage()}</span>
             </span>
           </div>
         </div>
       </header>
 
-      <Select labelId="demo-simple-select-label" id="demo-simple-select">
-        <MenuItem value={10}>+</MenuItem>
-        <MenuItem value={20}>-</MenuItem>
+      <Select
+        onChange={(e) => setEntryType(e.target.value)}
+        value={entryType}
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+      >
+        <MenuItem value={1}>+</MenuItem>
+        <MenuItem value={0}>-</MenuItem>
       </Select>
 
       <TextField
-        size="small"
+        onChange={(e) => setEntryDescription(e.target.value)}
+        value={entryDescription}
+        required
         id="outlined-basic"
         label="Add description"
         variant="outlined"
+        inputProps={{ maxLength: 50 }}
       />
 
       <TextField
-        size="small"
-        id="outlined-number"
-        label="Value"
+        onChange={(e) => setEntryAmount(e.target.value)}
+        value={entryAmount}
+        id="filled-number"
+        label="Enter amount"
         type="number"
+        inputProps={{ min: 1 }}
         InputLabelProps={{
           shrink: true,
         }}
+        variant="filled"
       />
 
-      <Button variant="contained">Submit</Button>
+      {entryType === 1 ? (
+        <Button onClick={submitTransaction} variant="contained" color="success">
+          Enter Income
+        </Button>
+      ) : null}
+      {entryType === 0 ? (
+        <Button onClick={submitTransaction} variant="contained" color="error">
+          Enter Expense
+        </Button>
+      ) : null}
 
       <Grid container spacing={2}>
         <Grid item sm={6}>
-          <TransactionsList transactions={transactions} type="Income" />
+          <TransactionsList
+            transactions={transactions}
+            type="Income"
+            deleteTransaction={deleteTransaction}
+          />
         </Grid>
 
         <Grid item sm={6}>
-          <TransactionsList transactions={transactions} type="Expense" />
+          <TransactionsList
+            transactions={transactions}
+            type="Expenses"
+            deleteTransaction={deleteTransaction}
+          />
         </Grid>
       </Grid>
     </div>

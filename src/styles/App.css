@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+/* .table-list-income tr:hover {
+  background-color: #90EE90;
+}
+
+.table-list-expense tr:hover {
+  background-color: #F1948A;
+} */
+
+.table-list tr:hover td:last-of-type svg {
+  display: block !important;
+}
