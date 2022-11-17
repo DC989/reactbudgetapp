@@ -21,7 +21,7 @@ export function getMonthAndYear() {
   return { month, year };
 }
 
-export const listOfIncome = [
+export const fakeListOfIncome = [
   {
     type: "income",
     description: "Salary",
@@ -39,7 +39,7 @@ export const listOfIncome = [
   },
 ];
 
-export const listOfExpenses = [
+export const fakeListOfExpenses = [
   {
     type: "expense",
     description: "Rent",

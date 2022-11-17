@@ -11,6 +11,7 @@ export default function TransactionsList({
   transactions,
   type,
   deleteTransaction,
+  incomeSpentPercentagePerExpense,
 }) {
   return (
     <TableContainer component={Paper}>
@@ -61,7 +62,9 @@ export default function TransactionsList({
                     <TableCell style={{ position: "relative" }}>
                       -{transaction.amount}
                       <br />
-                      <span style={{ backgroundColor: "red" }}>50%</span>
+                      <span style={{ backgroundColor: "red" }}>
+                        {incomeSpentPercentagePerExpense(transaction.amount)}
+                      </span>
                       <CancelIcon
                         onClick={() =>
                           deleteTransaction(index, transaction.type)

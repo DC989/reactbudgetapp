@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
@@ -11,23 +11,24 @@ import "../styles/App.css";
 
 import {
   getMonthAndYear,
-  listOfIncome,
-  listOfExpenses,
+  fakeListOfIncome,
+  fakeListOfExpenses,
 } from "../utils/helpers";
 
 function App() {
-  const [incomeTransactions, setIncomeTransactions] = useState(listOfIncome);
-  const [expenseTransactions, setExpenseTransactions] =
-    useState(listOfExpenses);
+  const [incomeTransactions, setIncomeTransactions] = useState(
+    localStorage.getItem("listOfIncome")
+      ? JSON.parse(localStorage.getItem("listOfIncome"))
+      : fakeListOfIncome
+  );
+  const [expenseTransactions, setExpenseTransactions] = useState(
+    localStorage.getItem("listOfExpenses")
+      ? JSON.parse(localStorage.getItem("listOfExpenses"))
+      : fakeListOfExpenses
+  );
   const [entryType, setEntryType] = useState(1);
   const [entryDescription, setEntryDescription] = useState("");
   const [entryAmount, setEntryAmount] = useState("");
-
-  /* const [entry, setEntry] = useState({
-    type: 1,
-    description: "",
-    amount: "",
-  }); */
 
   const { month, year } = getMonthAndYear();
 
@@ -53,9 +54,15 @@ function App() {
 
   const availableBudget = getIncomeTotal() - getExpenseTotal();
 
-  const incomeSpentPercentage = () => {
+  const incomeSpentPercentageTotal = () => {
     return getIncomeTotal() > 0
-      ? `${((getExpenseTotal() / getIncomeTotal()) * 100).toFixed(2)}%`
+      ? `${Math.round((getExpenseTotal() / getIncomeTotal()) * 100)}%`
+      : "There is no income";
+  };
+
+  const incomeSpentPercentagePerExpense = (amount) => {
+    return getIncomeTotal() > 0
+      ? `${Math.round((amount / getIncomeTotal()) * 100)}%`
       : "There is no income";
   };
 
@@ -90,8 +97,6 @@ function App() {
   };
 
   const deleteTransaction = (key, type) => {
-    console.log(key);
-
     if (type === "income") {
       setIncomeTransactions((prevState) => {
         prevState = prevState.slice(0, key).concat(prevState.slice(key + 1));
@@ -104,6 +109,20 @@ function App() {
       });
     }
   };
+
+  useEffect(() => {
+    if (typeof Storage !== "undefined") {
+      localStorage.setItem("listOfIncome", JSON.stringify(incomeTransactions));
+      localStorage.setItem(
+        "listOfExpenses",
+        JSON.stringify(expenseTransactions)
+      );
+
+      console.log("Successfully read from local storage.");
+    } else {
+      alert("Sorry, your crappy browser does not support Web Storage...");
+    }
+  }, [incomeTransactions, expenseTransactions]);
 
   return (
     <div className="App">
@@ -130,7 +149,7 @@ function App() {
             <span>
               -{getExpenseTotal()}
               <br />
-              <span>{incomeSpentPercentage()}</span>
+              <span>{incomeSpentPercentageTotal()}</span>
             </span>
           </div>
         </div>
@@ -194,6 +213,7 @@ function App() {
             transactions={expenseTransactions}
             type="Expenses"
             deleteTransaction={deleteTransaction}
+            incomeSpentPercentagePerExpense={incomeSpentPercentagePerExpense}
           />
         </Grid>
       </Grid>
