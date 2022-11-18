@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
+
+import { useState, useRef, useEffect, useMemo } from "react";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
@@ -9,30 +11,18 @@ import TransactionsList from "./TransactionsList";
 
 import "../styles/App.css";
 
-import {
-  getMonthAndYear,
-  fakeListOfIncome,
-  fakeListOfExpenses,
-} from "../utils/helpers";
+import { getMonthAndYear } from "../utils/helpers";
 
 function App() {
-  const [incomeTransactions, setIncomeTransactions] = useState(
-    localStorage.getItem("listOfIncome")
-      ? JSON.parse(localStorage.getItem("listOfIncome"))
-      : fakeListOfIncome
-  );
-  const [expenseTransactions, setExpenseTransactions] = useState(
-    localStorage.getItem("listOfExpenses")
-      ? JSON.parse(localStorage.getItem("listOfExpenses"))
-      : fakeListOfExpenses
-  );
+  const [incomeTransactions, setIncomeTransactions] = useState([]);
+  const [expenseTransactions, setExpenseTransactions] = useState([]);
   const [entryType, setEntryType] = useState(1);
   const [entryDescription, setEntryDescription] = useState("");
   const [entryAmount, setEntryAmount] = useState("");
 
   const { month, year } = getMonthAndYear();
 
-  const getIncomeTotal = () => {
+  const getIncomeTotal = useMemo(() => {
     let incomeTotal = 0;
 
     incomeTransactions.map(
@@ -40,29 +30,29 @@ function App() {
     );
 
     return incomeTotal;
-  };
+  }, [incomeTransactions]);
 
-  const getExpenseTotal = () => {
-    let expensesTotal = 0;
+  const getExpenseTotal = useMemo(() => {
+    let expenseTotal = 0;
 
     expenseTransactions.map(
-      (transaction) => (expensesTotal += transaction.amount)
+      (transaction) => (expenseTotal += transaction.amount)
     );
 
-    return expensesTotal;
-  };
+    return expenseTotal;
+  }, [expenseTransactions]);
 
-  const availableBudget = getIncomeTotal() - getExpenseTotal();
+  const availableBudget = getIncomeTotal - getExpenseTotal;
 
   const incomeSpentPercentageTotal = () => {
-    return getIncomeTotal() > 0
-      ? `${Math.round((getExpenseTotal() / getIncomeTotal()) * 100)}%`
+    return getIncomeTotal > 0
+      ? `${Math.round((getExpenseTotal / getIncomeTotal) * 100)}%`
       : "There is no income";
   };
 
   const incomeSpentPercentagePerExpense = (amount) => {
-    return getIncomeTotal() > 0
-      ? `${Math.round((amount / getIncomeTotal()) * 100)}%`
+    return getIncomeTotal > 0
+      ? `${Math.round((amount / getIncomeTotal) * 100)}%`
       : "There is no income";
   };
 
@@ -72,6 +62,7 @@ function App() {
         setIncomeTransactions((prevState) => [
           ...prevState,
           {
+            id: uuidv4(),
             type: "income",
             description: entryDescription,
             amount: Number(entryAmount),
@@ -81,6 +72,7 @@ function App() {
         setExpenseTransactions((prevState) => [
           ...prevState,
           {
+            id: uuidv4(),
             type: "expense",
             description: entryDescription,
             amount: Number(entryAmount),
@@ -99,30 +91,72 @@ function App() {
   const deleteTransaction = (key, type) => {
     if (type === "income") {
       setIncomeTransactions((prevState) => {
-        prevState = prevState.slice(0, key).concat(prevState.slice(key + 1));
-        return prevState;
+        return prevState.filter((transaction) => transaction.id !== key);
       });
     } else {
       setExpenseTransactions((prevState) => {
-        prevState = prevState.slice(0, key).concat(prevState.slice(key + 1));
-        return prevState;
+        return prevState.filter((transaction) => transaction.id !== key);
       });
     }
   };
 
   useEffect(() => {
     if (typeof Storage !== "undefined") {
-      localStorage.setItem("listOfIncome", JSON.stringify(incomeTransactions));
-      localStorage.setItem(
-        "listOfExpenses",
-        JSON.stringify(expenseTransactions)
-      );
+      if (localStorage.getItem("listOfIncome")) {
+        setIncomeTransactions(JSON.parse(localStorage.getItem("listOfIncome")));
 
-      console.log("Successfully read from local storage.");
+        console.log("Successfull read from listOfIncome local storage.");
+      }
+
+      if (localStorage.getItem("listOfExpenses")) {
+        setExpenseTransactions(
+          JSON.parse(localStorage.getItem("listOfExpenses"))
+        );
+
+        console.log("Successfull read from listOfExpenses local storage.");
+      }
     } else {
       alert("Sorry, your crappy browser does not support Web Storage...");
     }
-  }, [incomeTransactions, expenseTransactions]);
+  }, []);
+
+  const initialRenderIncomeTransactions = useRef(true);
+
+  useEffect(() => {
+    if (typeof Storage !== "undefined") {
+      if (initialRenderIncomeTransactions.current) {
+        initialRenderIncomeTransactions.current = false;
+      } else {
+        localStorage.setItem(
+          "listOfIncome",
+          JSON.stringify(incomeTransactions)
+        );
+
+        console.log("Successfull write to listOfIncome local storage.");
+      }
+    } else {
+      alert("Sorry, your crappy browser does not support Web Storage...");
+    }
+  }, [incomeTransactions]);
+
+  const initialRendrExpenseTransactions = useRef(true);
+
+  useEffect(() => {
+    if (typeof Storage !== "undefined") {
+      if (initialRendrExpenseTransactions.current) {
+        initialRendrExpenseTransactions.current = false;
+      } else {
+        localStorage.setItem(
+          "listOfExpenses",
+          JSON.stringify(expenseTransactions)
+        );
+
+        console.log("Successfull write to listOfExpenses local storage.");
+      }
+    } else {
+      alert("Sorry, your crappy browser does not support Web Storage...");
+    }
+  }, [expenseTransactions]);
 
   return (
     <div className="App">
@@ -139,7 +173,7 @@ function App() {
             className="AppDisplayIncome"
           >
             Income
-            <span>+{getIncomeTotal()}</span>
+            <span>+{getIncomeTotal}</span>
           </div>
           <div
             style={{ backgroundColor: "red" }}
@@ -147,7 +181,7 @@ function App() {
           >
             Expenses
             <span>
-              -{getExpenseTotal()}
+              -{getExpenseTotal}
               <br />
               <span>{incomeSpentPercentageTotal()}</span>
             </span>

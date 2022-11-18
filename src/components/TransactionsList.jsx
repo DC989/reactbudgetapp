@@ -30,58 +30,54 @@ export default function TransactionsList({
         </TableHead>
         <TableBody>
           {type === "Income"
-            ? transactions
-                .filter((transaction) => transaction.type === "income")
-                .map((transaction, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{transaction.description}</TableCell>
-                    <TableCell style={{ position: "relative" }}>
-                      +{transaction.amount}{" "}
-                      <CancelIcon
-                        onClick={() =>
-                          deleteTransaction(index, transaction.type)
-                        }
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          right: "15px",
-                          transform: "translateY(-50%)",
-                          cursor: "pointer",
-                          display: "none",
-                        }}
-                        color="error"
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-            : transactions
-                .filter((transaction) => transaction.type === "expense")
-                .map((transaction, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{transaction.description}</TableCell>
-                    <TableCell style={{ position: "relative" }}>
-                      -{transaction.amount}
-                      <br />
-                      <span style={{ backgroundColor: "red" }}>
-                        {incomeSpentPercentagePerExpense(transaction.amount)}
-                      </span>
-                      <CancelIcon
-                        onClick={() =>
-                          deleteTransaction(index, transaction.type)
-                        }
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          right: "15px",
-                          transform: "translateY(-50%)",
-                          cursor: "pointer",
-                          display: "none",
-                        }}
-                        color="error"
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))}
+            ? transactions.map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell>{transaction.description}</TableCell>
+                  <TableCell style={{ position: "relative" }}>
+                    +{transaction.amount}{" "}
+                    <CancelIcon
+                      onClick={() =>
+                        deleteTransaction(transaction.id, transaction.type)
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "15px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        display: "none",
+                      }}
+                      color="error"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))
+            : transactions.map((transaction) => (
+                <TableRow key={transaction.id}>
+                  <TableCell>{transaction.description}</TableCell>
+                  <TableCell style={{ position: "relative" }}>
+                    -{transaction.amount}
+                    <br />
+                    <span style={{ backgroundColor: "red" }}>
+                      {incomeSpentPercentagePerExpense(transaction.amount)}
+                    </span>
+                    <CancelIcon
+                      onClick={() =>
+                        deleteTransaction(transaction.id, transaction.type)
+                      }
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        right: "15px",
+                        transform: "translateY(-50%)",
+                        cursor: "pointer",
+                        display: "none",
+                      }}
+                      color="error"
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
         </TableBody>
       </Table>
     </TableContainer>
