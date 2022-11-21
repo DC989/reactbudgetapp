@@ -1,11 +1,21 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+
+import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CancelIcon from "@mui/icons-material/Cancel";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 
 import TransactionsList from "./TransactionsList";
 
@@ -165,95 +175,110 @@ function App() {
     <div className="App">
       <header className="AppHeader">
         <div className="AppDisplay">
-          Available Budget in {month} {year}:
+          <span>
+            Available Budget in {month} {year}:
+          </span>
           <div className="AppDisplayBudget">
             {availableBudget > 0 ? `+ ${availableBudget.toFixed(2)}` : null}
             {availableBudget < 0 ? `${availableBudget.toFixed(2)}` : null}
             {availableBudget === 0 ? `${availableBudget.toFixed(2)}` : null}
           </div>
-          <div
-            style={{ backgroundColor: "lightblue" }}
-            className="AppDisplayIncome"
+
+          <TableContainer
+            sx={{ maxWidth: 300, boxShadow: "none !important" }}
+            component={Paper}
           >
-            Income
-            <span>+{getIncomeTotal}</span>
-          </div>
-          <div
-            style={{ backgroundColor: "red" }}
-            className="AppDisplayExpenses"
-          >
-            Expenses
-            <span>
-              -{getExpenseTotal}
-              <br />
-              <span>{incomeSpentPercentageTotal()}</span>
-            </span>
-          </div>
+            <Table aria-label="simple table">
+              <TableBody>
+                <TableRow className="AppDisplayIncome">
+                  <TableCell>INCOME</TableCell>
+                  <TableCell align="right">+{getIncomeTotal}</TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+                <TableRow className="AppDisplayExpenses">
+                  <TableCell>EXPENSES</TableCell>
+                  <TableCell align="right">-{getExpenseTotal}</TableCell>
+                  <TableCell>
+                    <span>{incomeSpentPercentageTotal()}</span>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
         </div>
       </header>
 
-      <Select
-        onChange={(e) => handleChange("type", e.target.value)}
-        value={entry.type}
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-      >
-        <MenuItem value={1}>+</MenuItem>
-        <MenuItem value={0}>-</MenuItem>
-      </Select>
+      <Box className="AppForm">
+        <Select
+          onChange={(e) => handleChange("type", e.target.value)}
+          value={entry.type}
+          labelId="demo-simple-select-label"
+          id="demo-simple-select"
+        >
+          <MenuItem value={1}>+</MenuItem>
+          <MenuItem value={0}>-</MenuItem>
+        </Select>
 
-      <TextField
-        onChange={(e) => handleChange("description", e.target.value)}
-        value={entry.description}
-        required
-        id="outlined-basic"
-        label="Add description"
-        variant="outlined"
-        inputProps={{ maxLength: 50 }}
-      />
+        <TextField
+          onChange={(e) => handleChange("description", e.target.value)}
+          value={entry.description}
+          required
+          id="outlined-basic"
+          label="Add description"
+          variant="outlined"
+          inputProps={{ maxLength: 50 }}
+        />
 
-      <TextField
-        onChange={(e) => handleChange("amount", e.target.value)}
-        value={entry.amount}
-        id="filled-number"
-        label="Enter amount"
-        type="number"
-        inputProps={{ min: 1 }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="filled"
-      />
+        <TextField
+          onChange={(e) => handleChange("amount", e.target.value)}
+          value={entry.amount}
+          required
+          id="filled-number"
+          label="Enter amount"
+          type="number"
+          inputProps={{ min: 1 }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          variant="filled"
+        />
 
-      {entry.type === 1 ? (
-        <Button onClick={submitTransaction} variant="contained" color="success">
-          Enter Income
-        </Button>
-      ) : null}
-      {entry.type === 0 ? (
-        <Button onClick={submitTransaction} variant="contained" color="error">
-          Enter Expense
-        </Button>
-      ) : null}
+        {entry.type === 1 ? (
+          <Button
+            onClick={submitTransaction}
+            variant="contained"
+            color="primary"
+          >
+            <CheckCircleIcon />
+          </Button>
+        ) : null}
+        {entry.type === 0 ? (
+          <Button onClick={submitTransaction} variant="contained" color="error">
+            <CancelIcon />
+          </Button>
+        ) : null}
+      </Box>
 
-      <Grid container spacing={2}>
-        <Grid item sm={6}>
-          <TransactionsList
-            transactions={incomeTransactions}
-            type="Income"
-            deleteTransaction={deleteTransaction}
-          />
+      <Box className="AppTransactions">
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TransactionsList
+              transactions={incomeTransactions}
+              type="INCOME"
+              deleteTransaction={deleteTransaction}
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <TransactionsList
+              transactions={expenseTransactions}
+              type="EXPENSES"
+              deleteTransaction={deleteTransaction}
+              incomeSpentPercentagePerExpense={incomeSpentPercentagePerExpense}
+            />
+          </Grid>
         </Grid>
-
-        <Grid item sm={6}>
-          <TransactionsList
-            transactions={expenseTransactions}
-            type="Expenses"
-            deleteTransaction={deleteTransaction}
-            incomeSpentPercentagePerExpense={incomeSpentPercentagePerExpense}
-          />
-        </Grid>
-      </Grid>
+      </Box>
     </div>
   );
 }

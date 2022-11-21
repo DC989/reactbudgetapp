@@ -14,27 +14,28 @@ export default function TransactionsList({
   incomeSpentPercentagePerExpense,
 }) {
   return (
-    <TableContainer component={Paper}>
+    <TableContainer sx={{ boxShadow: "none !important" }} component={Paper}>
       <Table
         className={
           "table-list " +
-          (type === "Income" ? "table-list-income" : "table-list-expense")
+          (type === "INCOME" ? "table-list-income" : "table-list-expense")
         }
         sx={{ minWidth: 500 }}
         aria-label="simple table"
       >
         <TableHead>
           <TableRow>
-            <TableCell>{type}</TableCell>
+            <TableCell colSpan={4}>{type}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {type === "Income"
+          {type === "INCOME"
             ? transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>{transaction.description}</TableCell>
+                  <TableCell>+{transaction.amount} </TableCell>
+                  <TableCell></TableCell>
                   <TableCell style={{ position: "relative" }}>
-                    +{transaction.amount}{" "}
                     <CancelIcon
                       onClick={() =>
                         deleteTransaction(transaction.id, transaction.type)
@@ -42,12 +43,11 @@ export default function TransactionsList({
                       style={{
                         position: "absolute",
                         top: "50%",
-                        right: "15px",
-                        transform: "translateY(-50%)",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
                         cursor: "pointer",
                         display: "none",
                       }}
-                      color="error"
                     />
                   </TableCell>
                 </TableRow>
@@ -55,12 +55,21 @@ export default function TransactionsList({
             : transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>{transaction.description}</TableCell>
-                  <TableCell style={{ position: "relative" }}>
-                    -{transaction.amount}
-                    <br />
-                    <span style={{ backgroundColor: "red" }}>
+                  <TableCell>-{transaction.amount}</TableCell>
+                  <TableCell>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        borderRadius: "5px",
+                        backgroundColor: "#ba000d",
+                        padding: "1px 5px 2px",
+                        color: "#fff",
+                      }}
+                    >
                       {incomeSpentPercentagePerExpense(transaction.amount)}
                     </span>
+                  </TableCell>
+                  <TableCell style={{ position: "relative" }}>
                     <CancelIcon
                       onClick={() =>
                         deleteTransaction(transaction.id, transaction.type)
@@ -68,12 +77,11 @@ export default function TransactionsList({
                       style={{
                         position: "absolute",
                         top: "50%",
-                        right: "15px",
-                        transform: "translateY(-50%)",
+                        left: "50%",
+                        transform: "translate(-50%, -50%)",
                         cursor: "pointer",
                         display: "none",
                       }}
-                      color="error"
                     />
                   </TableCell>
                 </TableRow>

@@ -1,49 +1,105 @@
-.App {
+.AppHeader {
+  background-color: #222831;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.AppDisplay {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+  padding: 7.5px;
+  font-size: 18px;
+  color: #fff;
+}
+
+.AppDisplay>* {
+  margin: 7.5px;
+}
+
+.AppDisplayBudget {
+  border-radius: 10px;
+  padding: 15px;
+  font-size: 50px;
+}
+
+.AppDisplayIncome td,
+.AppDisplayExpenses td {
+  border: none;
+  padding: 15px;
+  font-size: 16px;
+  color: #fff;
+}
+
+.AppDisplayIncome td {
+  background-color: #3f50b5;
+}
+
+.AppDisplayExpenses td {
+  background-color: #f44336;
+}
+
+.AppDisplayExpenses td:last-of-type>span {
+  border-radius: 5px;
+  background-color: #ba000d;
+  margin-left: 10px;
+  padding: 1px 5px 2px;
+}
+
+.AppForm {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #eee;
+  padding: 7.5px;
 }
 
-.App-link {
-  color: #61dafb;
+.AppForm>* {
+  margin: 7.5px !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.AppTransactions {
+  background-color: #393e46;
+  padding: 16px;
 }
 
-/* .table-list-income tr:hover {
-  background-color: #90EE90;
+.AppContent {
+  margin: 0 !important;
+}
+
+.AppContentColumn {
+  padding: 0 !important;
+}
+
+tr>td:nth-child(2) {
+  text-align: right;
+}
+
+.table-list-income tr th,
+.table-list-income tr td {
+  color: #3f50b5 !important;
+}
+
+.table-list-income tr:hover {
+  background-color: #3f50b5;
+}
+
+.table-list-expense tr th,
+.table-list-expense tr td {
+  color: #f44336 !important;
 }
 
 .table-list-expense tr:hover {
-  background-color: #F1948A;
-} */
+  background-color: #f44336;
+}
+
+.table-list-income tr:hover>th,
+.table-list-income tr:hover>td,
+.table-list-expense tr:hover>th,
+.table-list-expense tr:hover>td {
+  color: #fff !important;
+}
 
 .table-list tr:hover td:last-of-type svg {
   display: block !important;
