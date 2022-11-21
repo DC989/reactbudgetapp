@@ -16,9 +16,12 @@ import { getMonthAndYear } from "../utils/helpers";
 function App() {
   const [incomeTransactions, setIncomeTransactions] = useState([]);
   const [expenseTransactions, setExpenseTransactions] = useState([]);
-  const [entryType, setEntryType] = useState(1);
-  const [entryDescription, setEntryDescription] = useState("");
-  const [entryAmount, setEntryAmount] = useState("");
+
+  const [entry, setEntry] = useState({ type: 1, description: "", amount: "" });
+
+  const handleChange = (key, value) => {
+    setEntry((prevState) => ({ ...prevState, [key]: value }));
+  };
 
   const { month, year } = getMonthAndYear();
 
@@ -57,15 +60,15 @@ function App() {
   };
 
   const submitTransaction = () => {
-    if (entryDescription && entryAmount > 0) {
-      if (entryType === 1) {
+    if (entry.description && entry.amount > 0) {
+      if (entry.type === 1) {
         setIncomeTransactions((prevState) => [
           ...prevState,
           {
             id: uuidv4(),
             type: "income",
-            description: entryDescription,
-            amount: Number(entryAmount),
+            description: entry.description,
+            amount: Number(entry.amount),
           },
         ]);
       } else {
@@ -74,15 +77,15 @@ function App() {
           {
             id: uuidv4(),
             type: "expense",
-            description: entryDescription,
-            amount: Number(entryAmount),
+            description: entry.description,
+            amount: Number(entry.amount),
           },
         ]);
       }
 
-      setEntryType(1);
-      setEntryDescription("");
-      setEntryAmount("");
+      handleChange("type", 1);
+      handleChange("description", "");
+      handleChange("amount", "");
     } else {
       alert("Please fill in all the fields");
     }
@@ -190,8 +193,8 @@ function App() {
       </header>
 
       <Select
-        onChange={(e) => setEntryType(e.target.value)}
-        value={entryType}
+        onChange={(e) => handleChange("type", e.target.value)}
+        value={entry.type}
         labelId="demo-simple-select-label"
         id="demo-simple-select"
       >
@@ -200,8 +203,8 @@ function App() {
       </Select>
 
       <TextField
-        onChange={(e) => setEntryDescription(e.target.value)}
-        value={entryDescription}
+        onChange={(e) => handleChange("description", e.target.value)}
+        value={entry.description}
         required
         id="outlined-basic"
         label="Add description"
@@ -210,8 +213,8 @@ function App() {
       />
 
       <TextField
-        onChange={(e) => setEntryAmount(e.target.value)}
-        value={entryAmount}
+        onChange={(e) => handleChange("amount", e.target.value)}
+        value={entry.amount}
         id="filled-number"
         label="Enter amount"
         type="number"
@@ -222,12 +225,12 @@ function App() {
         variant="filled"
       />
 
-      {entryType === 1 ? (
+      {entry.type === 1 ? (
         <Button onClick={submitTransaction} variant="contained" color="success">
           Enter Income
         </Button>
       ) : null}
-      {entryType === 0 ? (
+      {entry.type === 0 ? (
         <Button onClick={submitTransaction} variant="contained" color="error">
           Enter Expense
         </Button>
