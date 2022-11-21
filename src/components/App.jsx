@@ -4,19 +4,9 @@ import { useState, useRef, useEffect, useMemo } from "react";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import MenuItem from "@mui/material/MenuItem";
-import Button from "@mui/material/Button";
-import Select from "@mui/material/Select";
-import TextField from "@mui/material/TextField";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 
+import Header from "./Header";
+import EntryForm from "./EntryForm";
 import TransactionsList from "./TransactionsList";
 
 import "../styles/App.css";
@@ -173,92 +163,19 @@ function App() {
 
   return (
     <div className="App">
-      <header className="AppHeader">
-        <div className="AppDisplay">
-          <span>
-            Available Budget in {month} {year}:
-          </span>
-          <div className="AppDisplayBudget">
-            {availableBudget > 0 ? `+ ${availableBudget.toFixed(2)}` : null}
-            {availableBudget < 0 ? `${availableBudget.toFixed(2)}` : null}
-            {availableBudget === 0 ? `${availableBudget.toFixed(2)}` : null}
-          </div>
-
-          <TableContainer
-            sx={{ maxWidth: 300, boxShadow: "none !important" }}
-            component={Paper}
-          >
-            <Table aria-label="simple table">
-              <TableBody>
-                <TableRow className="AppDisplayIncome">
-                  <TableCell>INCOME</TableCell>
-                  <TableCell align="right">+{getIncomeTotal}</TableCell>
-                  <TableCell></TableCell>
-                </TableRow>
-                <TableRow className="AppDisplayExpenses">
-                  <TableCell>EXPENSES</TableCell>
-                  <TableCell align="right">-{getExpenseTotal}</TableCell>
-                  <TableCell>
-                    <span>{incomeSpentPercentageTotal()}</span>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      </header>
-
-      <Box className="AppForm">
-        <Select
-          onChange={(e) => handleChange("type", e.target.value)}
-          value={entry.type}
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-        >
-          <MenuItem value={1}>+</MenuItem>
-          <MenuItem value={0}>-</MenuItem>
-        </Select>
-
-        <TextField
-          onChange={(e) => handleChange("description", e.target.value)}
-          value={entry.description}
-          required
-          id="outlined-basic"
-          label="Add description"
-          variant="outlined"
-          inputProps={{ maxLength: 50 }}
-        />
-
-        <TextField
-          onChange={(e) => handleChange("amount", e.target.value)}
-          value={entry.amount}
-          required
-          id="filled-number"
-          label="Enter amount"
-          type="number"
-          inputProps={{ min: 1 }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          variant="filled"
-        />
-
-        {entry.type === 1 ? (
-          <Button
-            onClick={submitTransaction}
-            variant="contained"
-            color="primary"
-          >
-            <CheckCircleIcon />
-          </Button>
-        ) : null}
-        {entry.type === 0 ? (
-          <Button onClick={submitTransaction} variant="contained" color="error">
-            <CancelIcon />
-          </Button>
-        ) : null}
-      </Box>
-
+      <Header
+        month={month}
+        year={year}
+        availableBudget={availableBudget}
+        getIncomeTotal={getIncomeTotal}
+        getExpenseTotal={getExpenseTotal}
+        incomeSpentPercentageTotal={incomeSpentPercentageTotal}
+      />
+      <EntryForm
+        entry={entry}
+        handleChange={handleChange}
+        submitTransaction={submitTransaction}
+      />
       <Box className="AppTransactions">
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
