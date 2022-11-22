@@ -34,14 +34,16 @@ export default function Header({
               <TableRow className="AppDisplayIncome">
                 <TableCell>INCOME</TableCell>
                 <TableCell align="right">+{getIncomeTotal}</TableCell>
-                <TableCell></TableCell>
+                {incomeSpentPercentageTotal() ? <TableCell></TableCell> : null}
               </TableRow>
               <TableRow className="AppDisplayExpenses">
                 <TableCell>EXPENSES</TableCell>
                 <TableCell align="right">-{getExpenseTotal}</TableCell>
-                <TableCell>
-                  <span>{incomeSpentPercentageTotal()}</span>
-                </TableCell>
+                {incomeSpentPercentageTotal() ? (
+                  <TableCell>
+                    <span>{incomeSpentPercentageTotal()}</span>
+                  </TableCell>
+                ) : null}
               </TableRow>
             </TableBody>
           </Table>

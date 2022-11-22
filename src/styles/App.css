@@ -43,7 +43,7 @@
   border-radius: 5px;
   background-color: #ba000d;
   margin-left: 10px;
-  padding: 1px 5px 2px;
+  padding: 3px 5px;
 }
 
 .AppForm {
@@ -62,6 +62,15 @@
 .AppTransactions {
   background-color: #393e46;
   padding: 16px;
+}
+
+.AppTransactions table th,
+.AppTransactions table td {
+  padding: 20px;
+}
+
+.AppTransactions table td {
+  width: 25%;
 }
 
 .AppContent {

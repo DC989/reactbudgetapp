@@ -50,13 +50,13 @@ function App() {
   const incomeSpentPercentageTotal = () => {
     return getIncomeTotal > 0
       ? `${Math.round((getExpenseTotal / getIncomeTotal) * 100)}%`
-      : "There is no income";
+      : false;
   };
 
   const incomeSpentPercentagePerExpense = (amount) => {
     return getIncomeTotal > 0
       ? `${Math.round((amount / getIncomeTotal) * 100)}%`
-      : "There is no income";
+      : false;
   };
 
   const submitTransaction = () => {
@@ -183,6 +183,7 @@ function App() {
               transactions={incomeTransactions}
               type="INCOME"
               deleteTransaction={deleteTransaction}
+              incomeSpentPercentagePerExpense={incomeSpentPercentagePerExpense}
             />
           </Grid>
 

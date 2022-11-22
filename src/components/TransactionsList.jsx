@@ -33,8 +33,10 @@ export default function TransactionsList({
             ? transactions.map((transaction) => (
                 <TableRow key={transaction.id}>
                   <TableCell>{transaction.description}</TableCell>
-                  <TableCell>+{transaction.amount} </TableCell>
-                  <TableCell></TableCell>
+                  <TableCell>+{transaction.amount}</TableCell>
+                  {incomeSpentPercentagePerExpense(transaction.amount) ? (
+                    <TableCell></TableCell>
+                  ) : null}
                   <TableCell style={{ position: "relative" }}>
                     <CancelIcon
                       onClick={() =>
@@ -56,19 +58,21 @@ export default function TransactionsList({
                 <TableRow key={transaction.id}>
                   <TableCell>{transaction.description}</TableCell>
                   <TableCell>-{transaction.amount}</TableCell>
-                  <TableCell>
-                    <span
-                      style={{
-                        display: "inline-block",
-                        borderRadius: "5px",
-                        backgroundColor: "#ba000d",
-                        padding: "1px 5px 2px",
-                        color: "#fff",
-                      }}
-                    >
-                      {incomeSpentPercentagePerExpense(transaction.amount)}
-                    </span>
-                  </TableCell>
+                  {incomeSpentPercentagePerExpense(transaction.amount) ? (
+                    <TableCell>
+                      <span
+                        style={{
+                          display: "inline-block",
+                          borderRadius: "5px",
+                          backgroundColor: "#ba000d",
+                          padding: "1px 5px 0",
+                          color: "#fff",
+                        }}
+                      >
+                        {incomeSpentPercentagePerExpense(transaction.amount)}
+                      </span>
+                    </TableCell>
+                  ) : null}
                   <TableCell style={{ position: "relative" }}>
                     <CancelIcon
                       onClick={() =>
