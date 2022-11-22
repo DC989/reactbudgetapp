@@ -3,8 +3,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CancelIcon from "@mui/icons-material/Cancel";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import DoDisturbOnIcon from "@mui/icons-material/DoDisturbOn";
 
 export default function EntryForm({ entry, handleChange, submitTransaction }) {
   return (
@@ -45,12 +45,12 @@ export default function EntryForm({ entry, handleChange, submitTransaction }) {
 
       {entry.type === 1 ? (
         <Button onClick={submitTransaction} variant="contained" color="primary">
-          <CheckCircleIcon />
+          <AddCircleIcon />
         </Button>
       ) : null}
       {entry.type === 0 ? (
         <Button onClick={submitTransaction} variant="contained" color="error">
-          <CancelIcon />
+          <DoDisturbOnIcon />
         </Button>
       ) : null}
     </Box>
